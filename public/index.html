@@ -1,20 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gemini AI Chatbot</title>
+  <title>HealthBot AI — Asisten Kesehatan Cerdas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <h1>Gemini AI Chatbot</h1>
-    <div id="chat-box" class="chat-box"></div>
-    <form id="chat-form">
-      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required />
-      <button type="submit">Send</button>
-    </form>
+
+  <!-- Animated background scene -->
+  <div class="bg-scene">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
   </div>
+
+  <!-- Main app layout -->
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+        <span>HealthBot AI</span>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-label">Kemampuan Saya</h3>
+        <ul class="capability-list">
+          <li><i class="fas fa-virus"></i> Penyakit &amp; gejala</li>
+          <li><i class="fas fa-pills"></i> Panduan obat-obatan</li>
+          <li><i class="fas fa-apple-alt"></i> Nutrisi &amp; diet sehat</li>
+          <li><i class="fas fa-running"></i> Olahraga &amp; kebugaran</li>
+          <li><i class="fas fa-brain"></i> Kesehatan mental</li>
+          <li><i class="fas fa-first-aid"></i> Pertolongan pertama</li>
+          <li><i class="fas fa-baby"></i> Kesehatan ibu &amp; anak</li>
+          <li><i class="fas fa-moon"></i> Tips tidur berkualitas</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-disclaimer">
+        <i class="fas fa-triangle-exclamation"></i>
+        <p>HealthBot AI hanya memberikan informasi umum, <strong>bukan</strong> pengganti konsultasi dokter. Untuk kondisi darurat, segera hubungi tenaga medis.</p>
+      </div>
+    </aside>
+
+    <!-- Chat Panel -->
+    <main class="chat-panel">
+
+      <!-- Header -->
+      <header class="chat-header">
+        <div class="header-bot">
+          <div class="avatar-wrap">
+            <div class="avatar-ring"></div>
+            <div class="avatar-icon"><i class="fas fa-robot"></i></div>
+            <span class="online-dot"></span>
+          </div>
+          <div class="header-info">
+            <h2>HealthBot AI</h2>
+            <p class="bot-status"><span class="pulse-dot"></span>Aktif &mdash; Siap membantu Anda</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="clear-btn" title="Mulai percakapan baru">
+            <i class="fas fa-rotate-left"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages area -->
+      <div class="messages" id="chat-box"></div>
+
+      <!-- Quick suggestions -->
+      <div class="suggestions-wrap" id="suggestions-wrap">
+        <p class="suggestions-label">Pertanyaan populer:</p>
+        <div class="suggestions">
+          <button class="chip" data-msg="Apa saja gejala flu dan bagaimana cara mengatasinya?">
+            <i class="fas fa-thermometer-half"></i> Gejala Flu
+          </button>
+          <button class="chip" data-msg="Bagaimana cara menjaga kesehatan jantung?">
+            <i class="fas fa-heart"></i> Jantung Sehat
+          </button>
+          <button class="chip" data-msg="Apa saja makanan yang baik untuk diet sehat?">
+            <i class="fas fa-apple-alt"></i> Diet Sehat
+          </button>
+          <button class="chip" data-msg="Bagaimana cara mengatasi stress dan kecemasan?">
+            <i class="fas fa-brain"></i> Atasi Stres
+          </button>
+          <button class="chip" data-msg="Berapa kebutuhan air minum yang ideal per hari?">
+            <i class="fas fa-droplet"></i> Kebutuhan Air
+          </button>
+          <button class="chip" data-msg="Apa itu tekanan darah tinggi dan bagaimana cara mencegahnya?">
+            <i class="fas fa-stethoscope"></i> Hipertensi
+          </button>
+          <button class="chip" data-msg="Apa manfaat olahraga rutin bagi kesehatan tubuh?">
+            <i class="fas fa-dumbbell"></i> Manfaat Olahraga
+          </button>
+          <button class="chip" data-msg="Bagaimana cara memperkuat sistem imun tubuh secara alami?">
+            <i class="fas fa-shield-heart"></i> Imunitas
+          </button>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="input-area">
+        <form id="chat-form">
+          <div class="input-box">
+            <textarea
+              id="user-input"
+              placeholder="Tanyakan tentang kesehatan, penyakit, obat-obatan…"
+              autocomplete="off"
+              rows="1"
+            ></textarea>
+            <button type="submit" id="send-btn" disabled>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
+        <p class="input-note">
+          <i class="fas fa-shield-heart"></i>
+          Informasi bersifat umum. Untuk kondisi serius, konsultasikan ke dokter.
+        </p>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
