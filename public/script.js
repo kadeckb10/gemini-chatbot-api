@@ -1,19 +1,24 @@
 /* ============================================================
-   HealthBot AI — Frontend Script
+   HealthBot AI — Floating Widget Script
    ============================================================ */
 
 // === DOM References ===
-const chatBox       = document.getElementById('chat-box');
-const chatForm      = document.getElementById('chat-form');
-const userInput     = document.getElementById('user-input');
-const sendBtn       = document.getElementById('send-btn');
-const clearBtn      = document.getElementById('clear-btn');
-const suggestWrap   = document.getElementById('suggestions-wrap');
-const chips         = document.querySelectorAll('.chip');
+const fab          = document.getElementById('fab');
+const fabBadge     = document.getElementById('fab-badge');
+const widget       = document.getElementById('widget');
+const closeBtn     = document.getElementById('close-btn');
+const clearBtn     = document.getElementById('clear-btn');
+const chatBox      = document.getElementById('chat-box');
+const chatForm     = document.getElementById('chat-form');
+const userInput    = document.getElementById('user-input');
+const sendBtn      = document.getElementById('send-btn');
+const suggestWrap  = document.getElementById('suggestions-wrap');
+const chips        = document.querySelectorAll('.chip');
 
 // === State ===
 let conversation = [];
 let isBusy = false;
+let isOpen = false;
 
 // === Configure marked.js ===
 if (typeof marked !== 'undefined') {
@@ -23,6 +28,32 @@ if (typeof marked !== 'undefined') {
 // === Init ===
 renderWelcome();
 initTextarea();
+openWidget();
+
+/* ============================================================
+   TOGGLE WIDGET OPEN / CLOSE
+   ============================================================ */
+function openWidget() {
+  isOpen = true;
+  widget.classList.add('is-open');
+  widget.setAttribute('aria-hidden', 'false');
+  fab.classList.add('is-open');
+  fabBadge.classList.add('hidden');
+  userInput.focus();
+}
+
+function closeWidget() {
+  isOpen = false;
+  widget.classList.remove('is-open');
+  widget.setAttribute('aria-hidden', 'true');
+  fab.classList.remove('is-open');
+}
+
+fab.addEventListener('click', () => {
+  isOpen ? closeWidget() : openWidget();
+});
+
+closeBtn.addEventListener('click', closeWidget);
 
 /* ============================================================
    WELCOME MESSAGE
@@ -32,7 +63,7 @@ function renderWelcome() {
     <div class="welcome-msg">
       <div class="welcome-icon"><i class="fas fa-heartbeat"></i></div>
       <h2>Halo! Saya HealthBot AI 👋</h2>
-      <p>Asisten kesehatan cerdas yang siap menjawab pertanyaan seputar kesehatan, penyakit, obat-obatan, nutrisi, dan gaya hidup sehat. Silakan mulai bertanya!</p>
+      <p>Tanyakan apa saja seputar kesehatan, penyakit, obat-obatan, atau gaya hidup sehat.</p>
     </div>
   `;
 }
@@ -42,11 +73,8 @@ function renderWelcome() {
    ============================================================ */
 function initTextarea() {
   userInput.addEventListener('input', () => {
-    // Auto-resize
     userInput.style.height = 'auto';
-    userInput.style.height = Math.min(userInput.scrollHeight, 140) + 'px';
-
-    // Toggle send button
+    userInput.style.height = Math.min(userInput.scrollHeight, 100) + 'px';
     sendBtn.disabled = userInput.value.trim().length === 0 || isBusy;
   });
 }
@@ -57,37 +85,28 @@ function initTextarea() {
 function appendMessage(role, text) {
   const isUser = role === 'user';
 
-  // On first user message: hide suggestions & welcome card
   if (isUser) {
     suggestWrap.classList.add('hidden');
     const welcome = chatBox.querySelector('.welcome-msg');
     if (welcome) welcome.remove();
   }
 
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
   const msgEl = document.createElement('div');
   msgEl.classList.add('msg', isUser ? 'user' : 'bot');
 
-  const avatarIcon = isUser ? 'fa-user' : 'fa-robot';
-  const senderName = isUser ? 'Anda' : 'HealthBot AI';
-
-  // Render content: user messages are escaped, bot messages use markdown
-  let contentHtml;
-  if (isUser) {
-    contentHtml = escapeHtml(text);
-  } else {
-    contentHtml = (typeof marked !== 'undefined')
-      ? marked.parse(text)
-      : escapeHtml(text).replace(/\n/g, '<br>');
-  }
+  const icon   = isUser ? 'fa-user' : 'fa-robot';
+  const name   = isUser ? 'Anda' : 'HealthBot AI';
+  const content = isUser
+    ? escapeHtml(text)
+    : (typeof marked !== 'undefined' ? marked.parse(text) : escapeHtml(text).replace(/\n/g, '<br>'));
 
   msgEl.innerHTML = `
-    <div class="msg-avatar"><i class="fas ${avatarIcon}"></i></div>
+    <div class="msg-avatar"><i class="fas ${icon}"></i></div>
     <div class="msg-content">
-      <span class="msg-name">${senderName}</span>
-      <div class="msg-bubble">${contentHtml}</div>
+      <span class="msg-name">${name}</span>
+      <div class="msg-bubble">${content}</div>
       <span class="msg-time">${timeStr}</span>
     </div>
   `;
@@ -125,15 +144,12 @@ function removeTyping() {
 }
 
 /* ============================================================
-   SCROLL TO BOTTOM
+   SCROLL & ESCAPE
    ============================================================ */
 function scrollToBottom() {
   chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
 }
 
-/* ============================================================
-   HTML ESCAPE (user input safety)
-   ============================================================ */
 function escapeHtml(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -168,20 +184,25 @@ async function sendMessage(text) {
     removeTyping();
 
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || `HTTP ${res.status}`);
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    const reply = data.result || 'Maaf, saya tidak mendapat respons. Silakan coba lagi.';
+    const reply = data.result || 'Maaf, tidak ada respons. Silakan coba lagi.';
 
     appendMessage('model', reply);
     conversation.push({ role: 'model', text: reply });
 
+    // Jika widget tertutup, tampilkan badge notifikasi
+    if (!isOpen) {
+      fabBadge.classList.remove('hidden');
+    }
+
   } catch (err) {
     removeTyping();
     appendMessage('model',
-      '⚠️ **Terjadi kesalahan koneksi.**\n\nTidak dapat terhubung ke server. Pastikan server sudah berjalan, lalu coba lagi.'
+      '⚠️ **Koneksi gagal.**\n\nTidak dapat terhubung ke server. Pastikan server sudah berjalan, lalu coba lagi.'
     );
     console.error('[HealthBot]', err);
   } finally {
@@ -207,7 +228,7 @@ chatForm.addEventListener('submit', async (e) => {
   await sendMessage(text);
 });
 
-// Enter to send (Shift+Enter = new line)
+// Enter = kirim, Shift+Enter = baris baru
 userInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
@@ -222,12 +243,10 @@ userInput.addEventListener('keydown', (e) => {
 
 // Quick suggestion chips
 chips.forEach((chip) => {
-  chip.addEventListener('click', () => {
-    sendMessage(chip.dataset.msg);
-  });
+  chip.addEventListener('click', () => sendMessage(chip.dataset.msg));
 });
 
-// Clear / reset conversation
+// Reset percakapan
 clearBtn.addEventListener('click', () => {
   conversation = [];
   isBusy = false;
@@ -236,4 +255,9 @@ clearBtn.addEventListener('click', () => {
   userInput.value = '';
   userInput.style.height = 'auto';
   sendBtn.disabled = true;
+});
+
+// Tutup widget dengan tombol Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isOpen) closeWidget();
 });

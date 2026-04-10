@@ -11,124 +11,103 @@
 </head>
 <body>
 
-  <!-- Animated background scene -->
-  <div class="bg-scene">
+  <!-- Simulasi halaman website -->
+  <div class="page-bg">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
     <div class="grid-overlay"></div>
   </div>
-
-  <!-- Main app layout -->
-  <div class="app">
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
-        <span>HealthBot AI</span>
-      </div>
-
-      <div class="sidebar-section">
-        <h3 class="sidebar-label">Kemampuan Saya</h3>
-        <ul class="capability-list">
-          <li><i class="fas fa-virus"></i> Penyakit &amp; gejala</li>
-          <li><i class="fas fa-pills"></i> Panduan obat-obatan</li>
-          <li><i class="fas fa-apple-alt"></i> Nutrisi &amp; diet sehat</li>
-          <li><i class="fas fa-running"></i> Olahraga &amp; kebugaran</li>
-          <li><i class="fas fa-brain"></i> Kesehatan mental</li>
-          <li><i class="fas fa-first-aid"></i> Pertolongan pertama</li>
-          <li><i class="fas fa-baby"></i> Kesehatan ibu &amp; anak</li>
-          <li><i class="fas fa-moon"></i> Tips tidur berkualitas</li>
-        </ul>
-      </div>
-
-      <div class="sidebar-disclaimer">
-        <i class="fas fa-triangle-exclamation"></i>
-        <p>HealthBot AI hanya memberikan informasi umum, <strong>bukan</strong> pengganti konsultasi dokter. Untuk kondisi darurat, segera hubungi tenaga medis.</p>
-      </div>
-    </aside>
-
-    <!-- Chat Panel -->
-    <main class="chat-panel">
-
-      <!-- Header -->
-      <header class="chat-header">
-        <div class="header-bot">
-          <div class="avatar-wrap">
-            <div class="avatar-ring"></div>
-            <div class="avatar-icon"><i class="fas fa-robot"></i></div>
-            <span class="online-dot"></span>
-          </div>
-          <div class="header-info">
-            <h2>HealthBot AI</h2>
-            <p class="bot-status"><span class="pulse-dot"></span>Aktif &mdash; Siap membantu Anda</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="btn-icon" id="clear-btn" title="Mulai percakapan baru">
-            <i class="fas fa-rotate-left"></i>
-          </button>
-        </div>
-      </header>
-
-      <!-- Messages area -->
-      <div class="messages" id="chat-box"></div>
-
-      <!-- Quick suggestions -->
-      <div class="suggestions-wrap" id="suggestions-wrap">
-        <p class="suggestions-label">Pertanyaan populer:</p>
-        <div class="suggestions">
-          <button class="chip" data-msg="Apa saja gejala flu dan bagaimana cara mengatasinya?">
-            <i class="fas fa-thermometer-half"></i> Gejala Flu
-          </button>
-          <button class="chip" data-msg="Bagaimana cara menjaga kesehatan jantung?">
-            <i class="fas fa-heart"></i> Jantung Sehat
-          </button>
-          <button class="chip" data-msg="Apa saja makanan yang baik untuk diet sehat?">
-            <i class="fas fa-apple-alt"></i> Diet Sehat
-          </button>
-          <button class="chip" data-msg="Bagaimana cara mengatasi stress dan kecemasan?">
-            <i class="fas fa-brain"></i> Atasi Stres
-          </button>
-          <button class="chip" data-msg="Berapa kebutuhan air minum yang ideal per hari?">
-            <i class="fas fa-droplet"></i> Kebutuhan Air
-          </button>
-          <button class="chip" data-msg="Apa itu tekanan darah tinggi dan bagaimana cara mencegahnya?">
-            <i class="fas fa-stethoscope"></i> Hipertensi
-          </button>
-          <button class="chip" data-msg="Apa manfaat olahraga rutin bagi kesehatan tubuh?">
-            <i class="fas fa-dumbbell"></i> Manfaat Olahraga
-          </button>
-          <button class="chip" data-msg="Bagaimana cara memperkuat sistem imun tubuh secara alami?">
-            <i class="fas fa-shield-heart"></i> Imunitas
-          </button>
-        </div>
-      </div>
-
-      <!-- Input area -->
-      <div class="input-area">
-        <form id="chat-form">
-          <div class="input-box">
-            <textarea
-              id="user-input"
-              placeholder="Tanyakan tentang kesehatan, penyakit, obat-obatan…"
-              autocomplete="off"
-              rows="1"
-            ></textarea>
-            <button type="submit" id="send-btn" disabled>
-              <i class="fas fa-paper-plane"></i>
-            </button>
-          </div>
-        </form>
-        <p class="input-note">
-          <i class="fas fa-shield-heart"></i>
-          Informasi bersifat umum. Untuk kondisi serius, konsultasikan ke dokter.
-        </p>
-      </div>
-
-    </main>
+  <div class="page-content">
+    <h1><i class="fas fa-heartbeat"></i> HealthBot AI</h1>
+    <p>Selamat datang di portal kesehatan kami.<br>Ada pertanyaan seputar kesehatan? Klik tombol chat di pojok kanan bawah!</p>
   </div>
+
+  <!-- ===================== FLOATING WIDGET ===================== -->
+
+  <!-- Toggle button -->
+  <button class="fab" id="fab" aria-label="Buka HealthBot AI">
+    <div class="fab-ring"></div>
+    <span class="fab-icon fab-icon--open"><i class="fas fa-comment-medical"></i></span>
+    <span class="fab-icon fab-icon--close hidden"><i class="fas fa-xmark"></i></span>
+    <span class="fab-badge" id="fab-badge">1</span>
+  </button>
+
+  <!-- Chat widget -->
+  <div class="widget" id="widget" aria-hidden="true">
+
+    <!-- Header -->
+    <div class="widget-header">
+      <div class="header-bot">
+        <div class="avatar-wrap">
+          <div class="avatar-ring"></div>
+          <div class="avatar-icon"><i class="fas fa-robot"></i></div>
+          <span class="online-dot"></span>
+        </div>
+        <div class="header-info">
+          <h2>HealthBot AI</h2>
+          <p class="bot-status"><span class="pulse-dot"></span>Online &mdash; Siap membantu</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" id="clear-btn" title="Reset percakapan">
+          <i class="fas fa-rotate-left"></i>
+        </button>
+        <button class="btn-icon" id="close-btn" title="Tutup">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages" id="chat-box"></div>
+
+    <!-- Quick suggestions -->
+    <div class="suggestions-wrap" id="suggestions-wrap">
+      <div class="suggestions">
+        <button class="chip" data-msg="Apa saja gejala flu dan cara mengatasinya?">
+          <i class="fas fa-thermometer-half"></i> Gejala Flu
+        </button>
+        <button class="chip" data-msg="Bagaimana cara menjaga kesehatan jantung?">
+          <i class="fas fa-heart"></i> Jantung Sehat
+        </button>
+        <button class="chip" data-msg="Makanan apa yang baik untuk diet sehat?">
+          <i class="fas fa-apple-alt"></i> Diet Sehat
+        </button>
+        <button class="chip" data-msg="Bagaimana cara mengatasi stress dan kecemasan?">
+          <i class="fas fa-brain"></i> Atasi Stres
+        </button>
+        <button class="chip" data-msg="Berapa kebutuhan air minum ideal per hari?">
+          <i class="fas fa-droplet"></i> Kebutuhan Air
+        </button>
+        <button class="chip" data-msg="Apa itu hipertensi dan cara mencegahnya?">
+          <i class="fas fa-stethoscope"></i> Hipertensi
+        </button>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <form id="chat-form">
+        <div class="input-box">
+          <textarea
+            id="user-input"
+            placeholder="Tanya seputar kesehatan…"
+            autocomplete="off"
+            rows="1"
+          ></textarea>
+          <button type="submit" id="send-btn" disabled>
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </form>
+      <p class="input-note">
+        <i class="fas fa-shield-heart"></i> Bukan pengganti konsultasi dokter
+      </p>
+    </div>
+
+  </div>
+  <!-- =================== END FLOATING WIDGET =================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="script.js"></script>
